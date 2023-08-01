@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState} from "react";
 import {  useContractRead, useNetwork,useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import CrowdFundingContractInterface from '../contracts/abi/Crowdfunding.json';
 import ProjectContractInterface from '../contracts/abi/Project.json';
@@ -11,11 +11,12 @@ const addressBnb = addressContract.addressBnb;
 const addressEth = addressContract.addresseth;
 const addressArbi = addressContract.addressArbi;
 const addressOpti = addressContract.addressOpti;
-
 export const Table = ({contractAddress,index}) => {
   const { chain, chains } = useNetwork()
   const { address, connector, isConnected } = useAccount();
   console.log(contractAddress , index,"contractAddress , key")
+  const [showAndHide, setShowAndHide] = useState(true);
+
 
   //===============each project contract config=============
   const projectContractConfig = {
@@ -80,18 +81,32 @@ export const Table = ({contractAddress,index}) => {
     data: verifyProjectReturnData,
     write: setVerification,
     error: verifyProjectError,
-    isSuccess
   } = useContractWrite(verifyProjectConfig);
 
+  //===========Show Project====================
+  const {
+    config: showProjectConfig,
+    error: showProjectConfigError,
+    isError: isShowProjectConfigError,
+  } = usePrepareContractWrite({
+    ...projectContractConfig,
+    functionName: 'setVisibility',
+    args: [
+      showAndHide
+    ],
+  });
 
+  const {
+    data: showProjectReturnData,
+    write: setVisibility,
+    error: showProjectError,
+    isSuccess
+  } = useContractWrite(showProjectConfig);
+
+//==================read functiuons=============
   const { data: isRevealed } = useContractRead({
     ...projectContractConfig,
     functionName: 'isRevealed',
-  });
-
-  const { data: isAdmin } = useContractRead({
-    ...projectContractConfig,
-    functionName: 'admin',
   });
 
   const { data: isVerified } = useContractRead({
@@ -106,8 +121,17 @@ export const Table = ({contractAddress,index}) => {
   console.log(chain, chains);
 
   const setVerify = () => {
-    console.log(isAdmin,"dsfa");
     setVerification?.();
+  }
+
+  const setShow = () => {
+    setVisibility?.();
+    console.log("object")
+    if(isSuccess && showAndHide === true){
+      setShowAndHide(false);
+    }else if(isSuccess && showAndHide === false){
+      setShowAndHide(true);
+    }
   }
   
   return (
@@ -159,6 +183,32 @@ export const Table = ({contractAddress,index}) => {
           setVerify
         </button>
       </td>
+
+      {isRevealed ? 
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <span className="bg-[#ECFBE6] text-[#3BB900] rounded-md py-1  font-bold px-2">
+            Revealed
+          </span>
+        </td> :
+        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <span className="bg-[#ECFBE6] text-[#000000] rounded-md py-1  font-bold px-2">
+            UnRevealed
+          </span>
+        </td>}
+      
+
+      <td class="text-sm  font-light px-6 py-4 whitespace-nowrap">
+        <button
+          disabled={isVerified ? true : false}
+          onClick={() => {
+            setShow();
+          }}
+          className="bg-[#1A75FF] bg-Chinese-Blue text-blue w-full sm:w-auto text-Pure-White rounded-4xl py-1 px-2.5 font-medium "
+        >
+          {showAndHide ? "setShow" : "setHide"}
+        </button>
+      </td>
+      
     </tr>
   );
 };
