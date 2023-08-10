@@ -1,4 +1,3 @@
-import { RiCloseCircleLine } from 'react-icons/ri';
 import Navbar from './Navbar';
 import useWindowPosition from '../../hooks/useWindowPosition';
 import { useAccountModal } from '@rainbow-me/rainbowkit';
@@ -25,7 +24,7 @@ const Sidebar = ({ showSideBar, setShowSideBar }) => {
         }}
         className='absolute md:hidden top-10 -right-4 bg-[#ffffff] rounded-full border-r border-[#F0F0F0]'
       >
-        <RiCloseCircleLine style={iconStyle} />
+       
       </div>
       <div className='h-full flex flex-col px-4 md:px-8 py-6'>
         <div className='flex-1 space-y-8 md:space-y-0'>

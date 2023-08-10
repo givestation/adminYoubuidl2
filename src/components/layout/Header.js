@@ -1,4 +1,3 @@
-import { GiHamburgerMenu } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
@@ -7,14 +6,7 @@ const iconStyle = { color: '#364C6F', fontSize: '2rem', background: '#fffff' };
 const Header = ({ setShowSideBar }) => {
   return (
     <div className='bg-Pure-White flex items-center space-x-2  w-full p-3 md:rounded-2xl'>
-      <div className='md:hidden '>
-        <GiHamburgerMenu
-          onClick={() => {
-            setShowSideBar(true);
-          }}
-          style={iconStyle}
-        />
-      </div>
+      
       <div className='flex-1 flex items-center  space-x-4 lg:space-x-8'>
         <div className='flex-1 sm:flex-none'>
           <Link to={'/'}>

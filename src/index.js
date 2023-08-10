@@ -1,10 +1,12 @@
-import './index.css';
+import React from 'react';
+// import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import '@rainbow-me/rainbowkit/styles.css';
-
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import {
   mainnet,
   polygon,
@@ -13,44 +15,34 @@ import {
   zkSync,
   hardhat,
   bsc,
-  
 } from 'wagmi/chains';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import '@rainbow-me/rainbowkit/styles.css';
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 
+import Table from './components/Table';
+import Cards from './components/Cards';
 import Layout from './components/layout';
-import FundToFarm from './pages/FundToFarm';
-import Dashboard from './pages/Dashboard';
-import Rewards from './pages/Rewards';
-import BuidlDetails from './pages/BuidlDetails';
-import Projects from './pages/Projects';
-import Contributions from './pages/Contributions';
-import MintDomain from './pages/MintDomain';
-import CreateProject from './pages/CreateProject';
-import WithdrawRequest from './pages/WithdrawRequest';
-import VoteForRequest from './pages/VoteForRequest';
-import Withdraw from './pages/Withdraw';
-
 
 const { chains, publicClient } = configureChains(
-  [bsc, mainnet, optimism, arbitrum,polygon,zkSync],
+  [bsc, mainnet, optimism, arbitrum],
   [
     // alchemyProvider({ apiKey: 'ZbcJUctTzRg0qySTHx0jmolpmxP-5V3g' }),
     publicProvider(),
   ],
-  // [
-  //   jsonRpcProvider({
-  //     rpc: (chain) => ({
-  //       https: `https://data-seed-prebsc-1-s1.binance.org:8545`,
-  //     }),
-  //   }),
-  // ]
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        https: `https://bsc-dataseed.binance.org/`,
+      }),
+    }),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'youbuidl',
-  projectId: 'a1dd57ddaed16cfb376bd7066679449f',
+  appName: 'youbuidlAdmin',
+  projectId: 'f8cdf9510d5c0964ea87d2919b02da10',
   chains,
 });
 
@@ -60,62 +52,36 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
-const router = createBrowserRouter([
-  {
-    element: <Layout />,
-    children: [
-      {
-        path: '/',
-        element: <Dashboard />,
-      },
-      {
-        path: '/projects',
-        element: <Projects />,
-      },
-      {
-        path: '/buidls/:slug/:index',
-        element: <BuidlDetails />,
-      },
-      {
-        path: '/buidls/:slug/:index/withdraw-request',
-        element: <WithdrawRequest />,
-      },
-      {
-        path: '/buidls/:slug/:index/withdraw',
-        element: <Withdraw />,
-      },
-      {
-        path: '/buidls/:slug/:index/voteForWR',
-        element: <VoteForRequest />,
-      },
-      {
-        path: '/contributions',
-        element: <Contributions />,
-      },
-      {
-        path: '/rewards',
-        element: <Rewards />,
-      },
-      {
-        path: '/fund-to-farm',
-        element: <FundToFarm />,
-      },
-      {
-        path: '/create-project',
-        element: <CreateProject />,
-      },
-      {
-        path: '/min-domain',
-        element: <MintDomain />,
-      },
-    ],
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     element: <Layout />,
+//     children: [
+      
+//       {
+//         path: '/',
+//         element: <Table />,
+//       },
+//       {
+//         path: '/cards',
+//         element: <Cards />,
+//       }
+     
+//     ],
+//   },
+// ]);
 
+
+// const root = ReactDOM.createRoot(document.getElementById('root'));
 createRoot(document.getElementById('root')).render(
   <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider chains={chains}>
-      <RouterProvider router={router} />
+      {/* <RouterProvider router={router} /> */}
+      <App/>
     </RainbowKitProvider>
   </WagmiConfig>
 );
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// ();
